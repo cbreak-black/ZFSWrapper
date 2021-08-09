@@ -13,6 +13,7 @@
 #include "ZFSNVList.hpp"
 
 #include <sstream>
+#include <algorithm>
 
 #include <sys/nvpair.h>
 
@@ -201,6 +202,7 @@ namespace zfs
 		{
 			case DATA_TYPE_DONTCARE:
 				os << "dontcare";
+				return true;
 			case DATA_TYPE_UNKNOWN:
 				os << "unknown";
 				return true;

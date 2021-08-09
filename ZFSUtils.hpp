@@ -20,6 +20,7 @@
 #include <string>
 #include <optional>
 #include <cstdint>
+#include <cstring>
 
 // libzfs.h forward declarations
 typedef struct zfs_handle zfs_handle_t;
