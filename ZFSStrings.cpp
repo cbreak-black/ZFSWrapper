@@ -80,8 +80,10 @@ namespace zfs
 				return "rebuild scrub";
 			case ZPOOL_STATUS_NON_NATIVE_ASHIFT:
 				return "non-native ashift";
+#if defined(ZFSW_HAS_ZPOOL_STATUS_COMPATIBILITY_ERR)
 			case ZPOOL_STATUS_COMPATIBILITY_ERR:
 				return "compatibility error";
+#endif
 			case ZPOOL_STATUS_OK:
 				return "ok";
 		}
@@ -152,8 +154,10 @@ namespace zfs
 				return u8"♻️🧽";
 			case ZPOOL_STATUS_NON_NATIVE_ASHIFT:
 				return u8"✅🐌";
+#if defined(ZFSW_HAS_ZPOOL_STATUS_COMPATIBILITY_ERR)
 			case ZPOOL_STATUS_COMPATIBILITY_ERR:
 				return u8"❌🔌";
+#endif
 			case ZPOOL_STATUS_OK:
 				return u8"✅";
 		}

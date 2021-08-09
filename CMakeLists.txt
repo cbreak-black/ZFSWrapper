@@ -15,6 +15,8 @@ set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
 
 option(ZFSW_BUILD_SHARED_LIBRARY "Build the ZFSWrapper as shared library" OFF)
 
+option(ZFSW_HAS_ZPOOL_STATUS_COMPATIBILITY_ERR "ZFS has symbol ZPOOL_STATUS_COMPATIBILITY_ERR" OFF)
+
 ################################################################################
 # Dependencies
 ################################################################################
@@ -66,6 +68,10 @@ endif()
 add_library(${PROJECT_NAME} ${ZFSW_LIBRARY_TYPE}
 	${ZFS_WRAPPER_SOURCES}
 )
+
+if(ZFSW_HAS_ZPOOL_STATUS_COMPATIBILITY_ERR)
+	add_compile_definitions(${PROJECT_NAME} ZFSW_HAS_ZPOOL_STATUS_COMPATIBILITY_ERR)
+endif()
 
 target_link_libraries(${PROJECT_NAME}
 	ZFSDependencies
