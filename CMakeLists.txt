@@ -51,12 +51,12 @@ target_link_libraries(ZFSDependencies INTERFACE
 ################################################################################
 
 set(ZFS_WRAPPER_SOURCES
-	ZFSNVList.cpp
-	ZFSNVList.hpp
-	ZFSStrings.cpp
-	ZFSStrings.hpp
-	ZFSUtils.cpp
-	ZFSUtils.hpp
+	include/ZFSNVList.hpp
+	include/ZFSStrings.hpp
+	include/ZFSUtils.hpp
+	src/ZFSNVList.cpp
+	src/ZFSStrings.cpp
+	src/ZFSUtils.cpp
 )
 
 if(ZFSW_BUILD_SHARED_LIBRARY)
@@ -79,7 +79,7 @@ target_link_libraries(${PROJECT_NAME}
 
 target_include_directories(${PROJECT_NAME}
 	PUBLIC
-		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/>
+		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 		$<INSTALL_INTERFACE:include> # <prefix>/include/
 )
 
