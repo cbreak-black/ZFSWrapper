@@ -481,10 +481,10 @@ namespace zfs
 		auto future = std::async([&p, &key](){
 			size_t r = 0;
 			r = write(p.fd[1], key.data(), key.size());
-			if (r == -1)
+			if (r == size_t(-1))
 				return r;
 			r = write(p.fd[1], "\n", 1);
-			if (r == -1)
+			if (r == size_t(-1))
 				return r;
 			return size_t();
 		});
