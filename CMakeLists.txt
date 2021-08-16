@@ -21,30 +21,9 @@ option(ZFSW_HAS_ZPOOL_STATUS_COMPATIBILITY_ERR "ZFS has symbol ZPOOL_STATUS_COMP
 # Dependencies
 ################################################################################
 
-find_path(ZFS_INCLUDE_DIR NAMES "libzfs.h"
-	HINTS
-		/usr/include/libzfs           # libzfslinux-dev on Ubuntu
-		/usr/local/zfs/include/libzfs # OpenZFSOnOSX 2.0
-)
-find_path(SPL_INCLUDE_DIR NAMES "stdlib.h"
-	HINTS
-		/usr/include/libspl           # libzfslinux-dev on Unbuntu
-		/usr/local/zfs/include/libspl # OpenZFSOnOSX 2.0
-)
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 
-find_library(ZFS_CORE_LIB NAMES "libzfs_core")
-find_library(ZFS_LIB NAMES "libzfs")
-find_library(ZPOOL_LIB NAMES "libpool")
-find_library(NVPAIR_LIB NAMES "libnvpair")
-
-add_library(ZFSDependencies INTERFACE IMPORTED)
-set_target_properties(ZFSDependencies PROPERTIES
-	INTERFACE_INCLUDE_DIRECTORIES
-		"${ZFS_INCLUDE_DIR};${SPL_INCLUDE_DIR}"
-)
-target_link_libraries(ZFSDependencies INTERFACE
-	${ZFS_CORE_LIB} ${ZFS_LIB} ${ZPOOL_LIB} ${NVPAIR_LIB}
-)
+find_package(ZFS REQUIRED)
 
 ################################################################################
 # Library
