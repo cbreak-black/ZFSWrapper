@@ -44,6 +44,8 @@ else()
 	set(ZFSW_LIBRARY_TYPE STATIC)
 endif()
 
+find_package(Threads REQUIRED)
+
 add_library(${PROJECT_NAME} ${ZFSW_LIBRARY_TYPE}
 	${ZFS_WRAPPER_SOURCES}
 )
@@ -54,6 +56,7 @@ endif()
 
 target_link_libraries(${PROJECT_NAME}
 	ZFSDependencies
+	Threads::Threads
 )
 
 target_include_directories(${PROJECT_NAME}
