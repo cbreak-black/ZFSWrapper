@@ -16,6 +16,7 @@ set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
 option(ZFSW_BUILD_SHARED_LIBRARY "Build the ZFSWrapper as shared library" OFF)
 
 option(ZFSW_HAS_ZPOOL_STATUS_COMPATIBILITY_ERR "ZFS has symbol ZPOOL_STATUS_COMPATIBILITY_ERR" OFF)
+option(ZFSW_HAS_ZPOOL_STATUS_INCOMPATIBLE_FEAT "ZFS has symbol ZPOOL_STATUS_INCOMPATIBLE_FEAT" OFF)
 
 ################################################################################
 # Dependencies

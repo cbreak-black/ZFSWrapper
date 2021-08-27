@@ -85,6 +85,10 @@ char const * describe_zpool_status_t(uint64_t stat)
 	case ZPOOL_STATUS_COMPATIBILITY_ERR:
 		return "compatibility error";
 #endif
+#if defined(ZFSW_HAS_ZPOOL_STATUS_INCOMPATIBLE_FEAT)
+	case ZPOOL_STATUS_INCOMPATIBLE_FEAT:
+		return u8"incompatible feature";
+#endif
 	case ZPOOL_STATUS_OK:
 		return "ok";
 	}
@@ -158,6 +162,10 @@ char const * emoji_pool_status_t(uint64_t stat)
 #if defined(ZFSW_HAS_ZPOOL_STATUS_COMPATIBILITY_ERR)
 	case ZPOOL_STATUS_COMPATIBILITY_ERR:
 		return u8"❌🔌";
+#endif
+#if defined(ZFSW_HAS_ZPOOL_STATUS_INCOMPATIBLE_FEAT)
+	case ZPOOL_STATUS_INCOMPATIBLE_FEAT:
+		return u8"🔌🎛";
 #endif
 	case ZPOOL_STATUS_OK:
 		return u8"✅";
