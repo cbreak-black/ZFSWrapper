@@ -58,7 +58,7 @@ if(ZFSW_HAS_ZPOOL_STATUS_INCOMPATIBLE_FEAT)
 	add_compile_definitions(${PROJECT_NAME} ZFSW_HAS_ZPOOL_STATUS_INCOMPATIBLE_FEAT)
 endif()
 
-target_link_libraries(${PROJECT_NAME}
+target_link_libraries(${PROJECT_NAME} PRIVATE
 	ZFSDependencies
 	Threads::Threads
 )
