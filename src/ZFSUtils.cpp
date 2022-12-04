@@ -18,12 +18,18 @@
 #include <sstream>
 #include <regex>
 
+extern "C"
+{
 #include <libzfs.h>
 #include <libzfs_core.h>
 #include <libzutil.h>
 
 //#include <sys/zfs_mount.h>
 #include <sys/mount.h>
+
+#include <unistd.h>
+}
+
 
 namespace zfs
 {
@@ -100,15 +106,13 @@ std::ostream & operator<<(std::ostream & os, LibZFSHandle::Version const & v)
 
 LibZFSHandle::Version LibZFSHandle::versionUserland()
 {
-	char zver_userland[64] = {};
-	zfs_version_userland(zver_userland, sizeof(zver_userland));
-	return parseVersion(zver_userland);
+	return parseVersion(zfs_version_userland());
 }
 
 LibZFSHandle::Version LibZFSHandle::versionKernel()
 {
-	char zver_kernel[64] = {};
-	if (zfs_version_kernel(zver_kernel, sizeof(zver_kernel)) == -1)
+	char const * zver_kernel = nullptr;
+	if (zver_kernel = zfs_version_kernel(); zver_kernel == nullptr)
 	{
 		throw std::runtime_error("Error getting zfs version from kernel");
 	}
@@ -150,7 +154,8 @@ static PropList zpoolProplist(zpool_handle_t * handle)
 {
 	PropList pl(nullptr, &zprop_free_list);
 	zprop_list_t * plRaw = nullptr;
-	int ec = zpool_expand_proplist(handle, &plRaw, B_TRUE);
+	zfs_type_t fst = ZFS_TYPE_POOL;
+	int ec = zpool_expand_proplist(handle, &plRaw, fst, B_TRUE);
 	if (ec == 0)
 		pl.reset(plRaw);
 	return pl;
@@ -864,7 +869,7 @@ uint64_t ZPool::guid() const
 
 uint64_t ZPool::status() const
 {
-	char * cp = nullptr;
+	char const * cp = nullptr;
 	zpool_errata_t errata = {};
 	zpool_status_t stat = zpool_get_status(m_handle, &cp, &errata);
 	return stat;
@@ -1209,8 +1214,12 @@ std::vector<ImportablePool> LibZFSHandle::importablePools(
 {
 	importargs_t args = {};
 	auto keep = setImportSearchPaths(&args, searchPathOverride);
+	libpc_handle_t lpch = {
+		.lpc_lib_handle = m_handle,
+		.lpc_ops = &libzfs_config_ops,
+	};
 	auto list = NVList(
-	    zpool_search_import(handle(), &args, &libzfs_config_ops),
+	    zpool_search_import(&lpch, &args),
 	    zfs::NVList::TakeOwnership());
 	std::vector<ImportablePool> pools;
 	for (auto pair : list)
@@ -1219,7 +1228,7 @@ std::vector<ImportablePool> LibZFSHandle::importablePools(
 		uint64_t poolState = l.lookup<uint64_t>(ZPOOL_CONFIG_POOL_STATE);
 		if (poolState == POOL_STATE_DESTROYED)
 			continue; // Ignore destroyed pools
-		char * msg = nullptr;
+		char const * msg = nullptr;
 		zpool_errata_t errata = {};
 		zpool_status_t status = zpool_import_status(l.toList(), &msg, &errata);
 		pools.push_back({
@@ -1239,8 +1248,12 @@ static std::vector<ZPool> import_with_args(
     LibZFSHandle::ImportProps const & props)
 {
 	auto keep = setImportSearchPaths(args, props.searchPathOverride);
+	libpc_handle_t lpch = {
+		.lpc_lib_handle = lib.handle(),
+		.lpc_ops = &libzfs_config_ops,
+	};
 	auto list = NVList(
-	    zpool_search_import(lib.handle(), args, &libzfs_config_ops),
+	    zpool_search_import(&lpch, args),
 	    zfs::NVList::TakeOwnership());
 	std::vector<ZPool> pools;
 	for (auto pair : list)
@@ -1249,7 +1262,7 @@ static std::vector<ZPool> import_with_args(
 		uint64_t poolState = l.lookup<uint64_t>(ZPOOL_CONFIG_POOL_STATE);
 		if (poolState == POOL_STATE_DESTROYED)
 			continue; // Ignore destroyed pools
-		char * msg = nullptr;
+		char const * msg = nullptr;
 		zpool_errata_t errata = {};
 		zpool_status_t status = zpool_import_status(l.toList(), &msg, &errata);
 		if (!props.allowUnhealthy &&

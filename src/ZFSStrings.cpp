@@ -13,7 +13,10 @@
 
 #include "ZFSStrings.hpp"
 
+extern "C"
+{
 #include <libzfs.h>
+}
 
 namespace zfs
 {

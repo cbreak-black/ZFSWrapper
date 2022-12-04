@@ -16,7 +16,10 @@
 #include <sstream>
 #include <algorithm>
 
+extern "C"
+{
 #include <sys/nvpair.h>
+}
 
 namespace zfs
 {
